@@ -1,21 +1,37 @@
 "use client";
 
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import * as Yup from "yup";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebase";
 import { useRouter } from "next/navigation";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+const validationSchema = Yup.object({
+  email: Yup.string().email("Invalid email address").required("Required"),
+  password: Yup.string().required("Password required"),
+});
+
+type FormData = {
+  email: string;
+  password: string;
+};
 
 export default function Signin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: yupResolver(validationSchema),
+  });
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: FormData) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      router.push("/chat"); // Redirect to chat page after successful signin
+      await signInWithEmailAndPassword(auth, data.email, data.password);
+      router.push("/chat");
     } catch (error) {
       console.error("Signin error:", error);
       alert("Error signing in. Please try again.");
@@ -44,24 +60,40 @@ export default function Signin() {
         <Typography variant="h4" component="h1" gutterBottom>
           Sign In
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%" }}>
-          <TextField
-            label="Email"
-            type="email"
-            fullWidth
-            margin="normal"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+        <Box
+          component="form"
+          onSubmit={handleSubmit(onSubmit)}
+          sx={{ width: "100%" }}
+        >
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Email"
+                type="email"
+                fullWidth
+                margin="normal"
+                error={!!errors.email}
+                helperText={errors.email ? errors.email.message : ""}
+              />
+            )}
           />
-          <TextField
-            label="Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Password"
+                type="password"
+                fullWidth
+                margin="normal"
+                error={!!errors.password}
+                helperText={errors.password ? errors.password.message : ""}
+              />
+            )}
           />
           <Button
             type="submit"
