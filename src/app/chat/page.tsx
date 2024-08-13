@@ -8,7 +8,7 @@ interface ChatMessage {
   content: string;
 }
 
-export default function Home() {
+export default function Chat() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
