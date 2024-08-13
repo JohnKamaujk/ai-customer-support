@@ -1,16 +1,52 @@
 "use client";
 
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import * as Yup from "yup";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../../firebase";
+import { useRouter } from "next/navigation";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+const validationSchema = Yup.object({
+  email: Yup.string().email("Invalid email address").required("Required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Required"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password")], "Passwords must match")
+    .required("Required"),
+});
+
+type FormData = {
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 
 export default function Signup() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Add your signup logic here
+  const onSubmit = async (data: FormData) => {
+    try {
+      await createUserWithEmailAndPassword(auth, data.email, data.password);
+      router.push("/signin");
+    } catch (error) {
+      console.error("Signup error:", error);
+      alert("Error signing up. Please try again.");
+    }
   };
 
   return (
@@ -35,33 +71,57 @@ export default function Signup() {
         <Typography variant="h4" component="h1" gutterBottom>
           Sign Up
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%" }}>
-          <TextField
-            label="Email"
-            type="email"
-            fullWidth
-            margin="normal"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+        <Box
+          component="form"
+          onSubmit={handleSubmit(onSubmit)}
+          sx={{ width: "100%" }}
+        >
+          <Controller
+            name="email"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Email"
+                type="email"
+                fullWidth
+                margin="normal"
+                error={!!errors.email}
+                helperText={errors.email ? errors.email.message : ""}
+              />
+            )}
           />
-          <TextField
-            label="Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Password"
+                type="password"
+                fullWidth
+                margin="normal"
+                error={!!errors.password}
+                helperText={errors.password ? errors.password.message : ""}
+              />
+            )}
           />
-          <TextField
-            label="Confirm Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            required
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+          <Controller
+            name="confirmPassword"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Confirm Password"
+                type="password"
+                fullWidth
+                margin="normal"
+                error={!!errors.confirmPassword}
+                helperText={
+                  errors.confirmPassword ? errors.confirmPassword.message : ""
+                }
+              />
+            )}
           />
           <Button
             type="submit"

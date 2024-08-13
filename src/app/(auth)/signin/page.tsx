@@ -2,14 +2,24 @@
 
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useState } from "react";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../../firebase";
+import { useRouter } from "next/navigation";
 
 export default function Signin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add your signin logic here
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push("/chat"); // Redirect to chat page after successful signin
+    } catch (error) {
+      console.error("Signin error:", error);
+      alert("Error signing in. Please try again.");
+    }
   };
 
   return (
