@@ -1,11 +1,19 @@
 "use client";
 
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import * as Yup from "yup";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../lib/firebase";
 import { useRouter } from "next/navigation";
+import NextLink from "next/link";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 const validationSchema = Yup.object({
@@ -105,6 +113,12 @@ export default function Signin() {
             Sign In
           </Button>
         </Box>
+        <Typography variant="body2" mt="16px">
+          Don't have an account?{" "}
+          <Link component={NextLink} href="/signup" color="primary">
+            Sign Up
+          </Link>
+        </Typography>
       </Box>
     </Container>
   );
