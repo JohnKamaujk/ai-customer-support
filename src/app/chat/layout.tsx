@@ -15,7 +15,7 @@ const ChatLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   return (
     <AuthGuard>
-      <Box>
+      <Box bgcolor="var(--primary-bg)">
         <IconButton
           size="large"
           edge="start"

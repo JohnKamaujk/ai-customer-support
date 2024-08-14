@@ -22,7 +22,7 @@ const SidebarDrawer = ({
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-      router.push("/signin");
+      router.push("/");
     } catch (error) {
       console.error("Sign out error:", error);
     }
