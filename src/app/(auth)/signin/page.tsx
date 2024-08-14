@@ -4,7 +4,7 @@ import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import * as Yup from "yup";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../../firebase";
+import { auth } from "../../../lib/firebase";
 import { useRouter } from "next/navigation";
 import { yupResolver } from "@hookform/resolvers/yup";
 

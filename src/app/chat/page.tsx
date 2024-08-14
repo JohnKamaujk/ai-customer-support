@@ -1,5 +1,6 @@
 "use client";
 
+import AuthGuard from "@/components/AuthGuard";
 import { Box, Button, Stack, TextField } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 
@@ -104,7 +105,7 @@ export default function Chat() {
   return (
     <Box
       width="100vw"
-      height="100vh"
+      height="90vh"
       display="flex"
       flexDirection="column"
       justifyContent="center"
