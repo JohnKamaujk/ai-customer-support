@@ -116,7 +116,7 @@ export default function Signin() {
           </Button>
         </Box>
         <Typography variant="body2" mt="16px">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link component={NextLink} href="/signup" color="primary">
             Sign Up
           </Link>
