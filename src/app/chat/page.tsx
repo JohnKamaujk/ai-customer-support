@@ -116,6 +116,7 @@ export default function Chat() {
         width="500px"
         height="700px"
         border="1px solid black"
+        borderRadius="8px"
         p={2}
         spacing={3}
       >
