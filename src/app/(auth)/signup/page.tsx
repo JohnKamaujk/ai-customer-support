@@ -1,11 +1,19 @@
 "use client";
 
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import * as Yup from "yup";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../lib/firebase";
 import { useRouter } from "next/navigation";
+import NextLink from "next/link";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 const validationSchema = Yup.object({
@@ -51,18 +59,20 @@ export default function Signup() {
 
   return (
     <Container
-      maxWidth="sm"
+      maxWidth={false}
       sx={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         height: "100vh",
+        width: "100vw",
+        bgcolor: "var(--primary-bg)",
       }}
     >
       <Box
         sx={{
-          width: "100%",
+          width: "40%",
           p: 4,
           boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
           borderRadius: 2,
@@ -133,6 +143,12 @@ export default function Signup() {
             Sign Up
           </Button>
         </Box>
+        <Typography variant="body2" mt="16px">
+          Already have an account?{" "}
+          <Link component={NextLink} href="/signin" color="primary">
+            Sign In
+          </Link>
+        </Typography>
       </Box>
     </Container>
   );
